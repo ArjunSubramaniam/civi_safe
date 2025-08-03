@@ -1,71 +1,67 @@
 export interface Complaint {
   id: string
   title: string
-  category: "safety" | "infrastructure" | "harassment" | "others"
+  category: "Safety" | "Infrastructure" | "Harassment" | "Others"
   description: string
-  status: "pending" | "in-review" | "resolved"
-  date: string
+  status: "Pending" | "In Review" | "Resolved"
   submittedBy: string
-  hasFile?: boolean
+  submittedAt: string
   comments?: string[]
+  fileName?: string
 }
 
 export const dummyComplaints: Complaint[] = [
   {
-    id: "CMP-001",
-    title: "Broken lighting in parking area",
-    category: "safety",
+    id: "1",
+    title: "Broken streetlight in parking lot",
+    category: "Safety",
     description:
-      "The lighting in the main parking area has been broken for over a week. This creates safety concerns for students and staff during evening hours.",
-    status: "pending",
-    date: "2024-01-15",
-    submittedBy: "user@example.com",
-    hasFile: true,
-    comments: [],
-  },
-  {
-    id: "CMP-002",
-    title: "Air conditioning not working in Library",
-    category: "infrastructure",
-    description:
-      "The air conditioning system in the main library has been malfunctioning for the past three days. The temperature is uncomfortably high.",
-    status: "in-review",
-    date: "2024-01-14",
+      "The streetlight near the main entrance has been flickering for weeks and now completely stopped working. This creates a safety hazard for students walking to their cars at night.",
+    status: "In Review",
     submittedBy: "student@college.edu",
-    comments: ["Maintenance team has been notified", "Scheduled for repair on Jan 18"],
+    submittedAt: "2024-01-15T10:30:00Z",
+    comments: ["Investigation started", "Maintenance team notified"],
   },
   {
-    id: "CMP-003",
+    id: "2",
+    title: "Water leak in Building A restroom",
+    category: "Infrastructure",
+    description:
+      "There is a significant water leak in the second floor restroom of Building A. The floor is constantly wet and slippery.",
+    status: "Resolved",
+    submittedBy: "faculty@college.edu",
+    submittedAt: "2024-01-10T14:20:00Z",
+    comments: ["Plumber contacted", "Leak fixed on 2024-01-12"],
+  },
+  {
+    id: "3",
     title: "Inappropriate behavior in cafeteria",
-    category: "harassment",
+    category: "Harassment",
     description:
-      "There have been multiple instances of inappropriate comments and behavior by certain individuals in the cafeteria during lunch hours.",
-    status: "resolved",
-    date: "2024-01-10",
-    submittedBy: "anonymous@system.com",
-    comments: ["Investigation completed", "Appropriate action taken", "Additional monitoring implemented"],
+      "A staff member has been making inappropriate comments to students during lunch hours. Multiple students have reported feeling uncomfortable.",
+    status: "Pending",
+    submittedBy: "anonymous",
+    submittedAt: "2024-01-20T09:15:00Z",
   },
   {
-    id: "CMP-004",
-    title: "WiFi connectivity issues in dormitory",
-    category: "infrastructure",
+    id: "4",
+    title: "Parking space allocation issue",
+    category: "Others",
     description:
-      "Students in Block A dormitory are experiencing frequent WiFi disconnections and slow internet speeds, affecting their studies.",
-    status: "in-review",
-    date: "2024-01-12",
-    submittedBy: "resident@college.edu",
-    hasFile: false,
-    comments: ["IT team investigating the issue"],
+      "The new parking allocation system is not working properly. Many faculty members are unable to find designated parking spots.",
+    status: "In Review",
+    submittedBy: "admin@college.edu",
+    submittedAt: "2024-01-18T16:45:00Z",
+    comments: ["Reviewing parking policy"],
   },
   {
-    id: "CMP-005",
-    title: "Suggestion for better recycling system",
-    category: "others",
+    id: "5",
+    title: "Elevator malfunction in Library",
+    category: "Infrastructure",
     description:
-      "I would like to suggest implementing a more comprehensive recycling system across the campus to promote environmental sustainability.",
-    status: "pending",
-    date: "2024-01-16",
-    submittedBy: "eco.student@college.edu",
-    comments: [],
+      "The elevator in the main library building has been making strange noises and occasionally stops between floors.",
+    status: "Pending",
+    submittedBy: "librarian@college.edu",
+    submittedAt: "2024-01-22T11:00:00Z",
   },
 ]

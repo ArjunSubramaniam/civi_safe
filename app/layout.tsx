@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "CiviSafe - Complaint Management System",
-  description: "A comprehensive complaint management system for educational institutions and corporate offices",
+  description: "Streamline your complaint management with transparency and accountability",
     generator: 'v0.dev'
 }
 
@@ -21,7 +21,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {children}
-        <Toaster position="top-right" />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: "#363636",
+              color: "#fff",
+            },
+          }}
+        />
       </body>
     </html>
   )

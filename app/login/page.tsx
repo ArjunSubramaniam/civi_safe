@@ -4,34 +4,40 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Eye, EyeOff, Shield, Users, ArrowLeft } from "lucide-react"
-import toast from "react-hot-toast"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Shield, ArrowLeft } from "lucide-react"
+import { validateCredentials, setCurrentUser } from "@/utils/auth"
+import { toast } from "react-hot-toast"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate loading
+    // Simulate loading delay
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Validate credentials
-    if (email === "user@example.com" && password === "user123") {
-      localStorage.setItem("userRole", "user")
-      localStorage.setItem("userEmail", email)
-      toast.success("Welcome! Logged in successfully")
-      router.push("/user/dashboard")
-    } else if (email === "admin@example.com" && password === "admin123") {
-      localStorage.setItem("userRole", "admin")
-      localStorage.setItem("userEmail", email)
-      toast.success("Admin access granted")
-      router.push("/admin/dashboard")
+    const user = validateCredentials(email, password)
+
+    if (user) {
+      setCurrentUser(user)
+      toast.success(`Welcome ${user.role === "admin" ? "Administrator" : "User"}!`)
+
+      // Redirect based on role
+      if (user.role === "admin") {
+        router.push("/admin/dashboard")
+      } else {
+        router.push("/user/dashboard")
+      }
     } else {
       toast.error("Invalid credentials. Please try again.")
     }
@@ -41,108 +47,64 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <button
-            onClick={() => router.push("/")}
-            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Home
-          </button>
-          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4">
-            <Shield className="h-8 w-8 text-white" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900">Sign in to CiviSafe</h2>
-          <p className="mt-2 text-sm text-gray-600">Access your complaint management dashboard</p>
-        </div>
+      <div className="w-full max-w-md">
+        {/* Back to Home */}
+        <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Link>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <form className="space-y-6" onSubmit={handleLogin}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your email"
-              />
+        <Card>
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <Shield className="h-12 w-12 text-blue-600" />
             </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
+            <CardTitle className="text-2xl font-bold">Welcome to CiviSafe</CardTitle>
+            <CardDescription>Sign in to access your complaint management dashboard</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 pr-10"
-                  placeholder="Enter your password"
+                  required
                 />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
-                  )}
-                </button>
               </div>
-            </div>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+            </form>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Signing in..." : "Sign in"}
-            </button>
-          </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Demo Credentials</span>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div className="bg-gray-50 p-3 rounded-md">
-                <div className="flex items-center">
-                  <Users className="h-4 w-4 text-blue-600 mr-2" />
-                  <span className="text-sm font-medium text-gray-900">User</span>
+            {/* Demo Credentials */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold text-sm text-gray-700 mb-2">Demo Credentials:</h3>
+              <div className="space-y-2 text-xs text-gray-600">
+                <div>
+                  <strong>User:</strong> user@example.com / user123
                 </div>
-                <p className="text-xs text-gray-600 mt-1">user@example.com</p>
-                <p className="text-xs text-gray-600">user123</p>
-              </div>
-              <div className="bg-gray-50 p-3 rounded-md">
-                <div className="flex items-center">
-                  <Shield className="h-4 w-4 text-red-600 mr-2" />
-                  <span className="text-sm font-medium text-gray-900">Admin</span>
+                <div>
+                  <strong>Admin:</strong> admin@example.com / admin123
                 </div>
-                <p className="text-xs text-gray-600 mt-1">admin@example.com</p>
-                <p className="text-xs text-gray-600">admin123</p>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

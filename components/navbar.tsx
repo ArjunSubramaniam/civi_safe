@@ -1,59 +1,91 @@
 "use client"
 
+import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Shield, LogOut, User, Settings } from "lucide-react"
-import toast from "react-hot-toast"
+import { Button } from "@/components/ui/button"
+import { getCurrentUser, logout } from "@/utils/auth"
+import { Menu, X, Shield, User, LogOut } from "lucide-react"
 
-interface NavbarProps {
-  userRole: "user" | "admin"
-  userEmail: string
-}
-
-export default function Navbar({ userRole, userEmail }: NavbarProps) {
+export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
+  const user = getCurrentUser()
 
   const handleLogout = () => {
-    localStorage.removeItem("userRole")
-    localStorage.removeItem("userEmail")
-    toast.success("Logged out successfully")
+    logout()
     router.push("/")
   }
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
-      <div className="container">
+    <nav className="bg-white shadow-sm border-b">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <div className="flex items-center">
-              <Shield className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">CiviSafe</span>
-            </div>
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <Shield className="h-8 w-8 text-blue-600" />
+            <span className="text-xl font-bold text-gray-900">CiviSafe</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <>
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  {user.role === "admin" ? <Shield className="h-4 w-4" /> : <User className="h-4 w-4" />}
+                  <span>{user.email}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center space-x-1 bg-transparent"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </>
+            ) : (
+              <Link href="/login">
+                <Button>Login</Button>
+              </Link>
+            )}
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className={`p-2 rounded-full ${userRole === "admin" ? "bg-red-100" : "bg-blue-100"}`}>
-                {userRole === "admin" ? (
-                  <Settings className="h-4 w-4 text-red-600" />
-                ) : (
-                  <User className="h-4 w-4 text-blue-600" />
-                )}
-              </div>
-              <div className="hidden sm:block">
-                <p className="text-sm font-medium text-gray-900 capitalize">{userRole}</p>
-                <p className="text-xs text-gray-500">{userEmail}</p>
-              </div>
-            </div>
-
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-1 px-3 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden py-4 border-t">
+            {user ? (
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 text-sm text-gray-600 px-2">
+                  {user.role === "admin" ? <Shield className="h-4 w-4" /> : <User className="h-4 w-4" />}
+                  <span>{user.email}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center space-x-1 bg-transparent"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
+            ) : (
+              <Link href="/login" className="block">
+                <Button className="w-full">Login</Button>
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   )

@@ -1,64 +1,66 @@
 "use client"
 
-import { Calendar, Tag, FileText, Trash2 } from "lucide-react"
-import StatusBadge from "./status-badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { StatusBadge } from "./status-badge"
+import type { Complaint } from "@/data/dummy-complaints"
+import { Trash2, Calendar, User } from "lucide-react"
+import { toast } from "react-hot-toast"
 
 interface ComplaintCardProps {
-  complaint: {
-    id: string
-    title: string
-    category: string
-    description: string
-    status: "pending" | "in-review" | "resolved"
-    date: string
-    hasFile?: boolean
-  }
+  complaint: Complaint
   onDelete?: (id: string) => void
-  showDelete?: boolean
+  showDeleteButton?: boolean
 }
 
-export default function ComplaintCard({ complaint, onDelete, showDelete = false }: ComplaintCardProps) {
+export function ComplaintCard({ complaint, onDelete, showDeleteButton = false }: ComplaintCardProps) {
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this complaint?")) {
+      onDelete?.(complaint.id)
+      toast.success("Complaint deleted successfully")
+    }
+  }
+
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <div className="flex items-start justify-between">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{complaint.title}</h3>
-            {showDelete && onDelete && (
-              <button
-                onClick={() => onDelete(complaint.id)}
-                className="ml-2 p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
-                title="Delete complaint"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            )}
+    <Card className="hover:shadow-md transition-shadow">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-2">{complaint.title}</CardTitle>
+          {showDeleteButton && onDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              className="text-red-600 hover:text-red-700 hover:bg-red-50 ml-2 flex-shrink-0"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        <div className="flex items-center justify-between">
+          <StatusBadge status={complaint.status} />
+          <span className="text-sm text-gray-500 capitalize px-2 py-1 bg-gray-100 rounded">{complaint.category}</span>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{complaint.description}</p>
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <div className="flex items-center space-x-1">
+            <User className="h-3 w-3" />
+            <span>{complaint.submittedBy}</span>
           </div>
-          <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
-            <div className="flex items-center">
-              <Tag className="h-4 w-4 mr-1" />
-              <span className="capitalize">{complaint.category}</span>
-            </div>
-            <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-1" />
-              <span>{complaint.date}</span>
-            </div>
-            {complaint.hasFile && (
-              <div className="flex items-center">
-                <FileText className="h-4 w-4 mr-1" />
-                <span>File attached</span>
-              </div>
-            )}
+          <div className="flex items-center space-x-1">
+            <Calendar className="h-3 w-3" />
+            <span>{new Date(complaint.submittedAt).toLocaleDateString()}</span>
           </div>
         </div>
-        <StatusBadge status={complaint.status} />
-      </div>
-
-      <p className="text-gray-700 text-sm leading-relaxed">{complaint.description}</p>
-
-      <div className="mt-4 pt-4 border-t border-gray-100">
-        <p className="text-xs text-gray-500">Complaint ID: {complaint.id}</p>
-      </div>
-    </div>
+        {complaint.comments && complaint.comments.length > 0 && (
+          <div className="mt-3 pt-3 border-t">
+            <p className="text-xs text-gray-500 mb-1">Latest comment:</p>
+            <p className="text-xs text-gray-700 italic">{complaint.comments[complaint.comments.length - 1]}</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
