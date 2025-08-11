@@ -1,30 +1,103 @@
-# Civisafe demo app
+# 🛡️ CiviSafe
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+CiviSafe is a modern **Next.js** web application that enables users to submit **anonymous complaints** and allows admins to view, manage, and take action.  
+It’s designed with a secure and intuitive interface to make civic reporting accessible and confidential.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/arjunvictor773-8078s-projects/v0-civisafe-demo-app)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/I0pTqhXBkNo)
+---
 
-## Overview
+## 🚀 Features
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+### 👤 User
+- Submit anonymous complaints
+- Simple and responsive interface
+- Fast, mobile-friendly experience
 
-## Deployment
+### 🛠️ Admin
+- View all submitted complaints
+- Mark complaints as resolved
+- Take actions and record notes
 
-Your project is live at:
+---
 
-**[https://vercel.com/arjunvictor773-8078s-projects/v0-civisafe-demo-app](https://vercel.com/arjunvictor773-8078s-projects/v0-civisafe-demo-app)**
+## 🖼️ Tech Stack
 
-## Build your app
+| Category      | Technology |
+|--------------|------------|
+| **Frontend & Backend** | [Next.js](https://nextjs.org/) (App Router) |
+| **UI Library** | [React](https://react.dev/) |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/) |
+| **Fonts** | [Geist](https://vercel.com/fonts) |
+| **Linting** | [ESLint](https://eslint.org/) |
+| **Deployment** | [Vercel](https://vercel.com/) |
 
-Continue building your app on:
+---
 
-**[https://v0.dev/chat/projects/I0pTqhXBkNo](https://v0.dev/chat/projects/I0pTqhXBkNo)**
+## 📦 Installation & Setup
 
-## How It Works
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/civisafe.git
+   cd civisafe
+````
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Create an `.env.local` file** and add your environment variables:
+
+   ```env
+   DATABASE_URL=your_database_url
+   NEXTAUTH_SECRET=your_secret
+   NEXTAUTH_URL=http://localhost:3000
+   ```
+
+4. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+---
+
+## 🌍 Live Demo
+
+🔗 **[CiviSafe Live](https://civisafe.vercel.app)**
+
+---
+
+## 📂 Project Structure
+
+```
+civisafe/
+├── app/              # Next.js App Router pages
+├── components/       # Reusable UI components
+├── hooks/            # Custom React hooks
+├── lib/              # Utility functions
+├── public/           # Static assets
+├── styles/           # Tailwind CSS styles
+└── ...
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repo
+2. Create a new branch (`git checkout -b feature-name`)
+3. Commit changes (`git commit -m "Added feature"`)
+4. Push to branch (`git push origin feature-name`)
+5. Open a Pull Request
+
+---
+
+**Made with ❤️ using Next.js, Tailwind, and shadcn/ui**
+
+```
